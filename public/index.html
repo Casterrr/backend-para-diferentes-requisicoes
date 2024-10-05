@@ -17,17 +17,24 @@
 <body>
     <h1>Exemplo de Requisições para Registro de Alunos</h1>
 
-    <form id="matriculaForm" class="form-container">
-        <input id="matricula" name="matricula" placeholder="matricula" required/>
-        <input id="nome" placeholder="nome" required/>
-        <input id="email" type="emai" placeholder="email" required/>
-        <input id="data_nascimento" type="date" placeholder="data de nascimento" required/>
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 200px;">
+        <label for="matricula">Matrícula:</label>
+        <input id="matricula" name="matricula" placeholder="Digite a matrícula" required/>
+        
+        <label for="nome">Nome:</label>
+        <input id="nome" name="nome" placeholder="Digite o nome completo" required/>
+        
+        <label for="email">E-mail:</label>
+        <input id="email" name="email" type="email" placeholder="Digite o e-mail" required/>
+        
+        <label for="data_nascimento">Data de Nascimento:</label>
+        <input id="data_nascimento" name="data_nascimento" type="date" required/>
+    </div>
 
-        <button onclick="getAlunos()">Listar Alunos (GET)</button>
-        <button type="submit">Registrar Aluno (POST)</button>
-        <button onclick="atualizarAluno()">Atualizar Aluno (PUT)</button>
-        <button onclick="deletarAluno()">Remover Aluno (DELETE)</button>
-    </form>
+    <button onclick="getAlunos()">Listar Alunos (GET)</button>
+    <button onclick="registrarAluno()">Registrar Aluno (POST)</button>
+    <button onclick="atualizarAluno()">Atualizar Aluno (PUT)</button>
+    <button onclick="deletarAluno()">Remover Aluno (DELETE)</button>
 
     
 
@@ -46,12 +53,18 @@
 
         // Função para realizar uma requisição POST para registrar um novo aluno
         function registrarAluno() {
+            const matricula = document.getElementById('matricula').value;
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const dataNascimento = document.getElementById('data_nascimento').value;
+            
+
             fetch('http://localhost:3000/alunos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ matricula: '20241001', nome: 'Maria Silva', email: 'maria@exemplo.com', dataNascimento: '2000-05-15' })
+                body: JSON.stringify({ matricula, nome, email, dataNascimento })
             })
             .then(response => response.json())
             .then(data => document.getElementById('response').innerText = JSON.stringify(data, null, 2))
@@ -60,12 +73,17 @@
 
         // Função para realizar uma requisição PUT para atualizar os dados de um aluno
         function atualizarAluno() {
-            fetch('http://localhost:3000/alunos/1', {
+            const matricula = document.getElementById('matricula').value;
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const dataNascimento = document.getElementById('data_nascimento').value;
+
+            fetch(`http://localhost:3000/alunos/${matricula}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ matricula: '20241001', nome: 'Maria Silva Atualizada', email: 'maria_atualizada@exemplo.com', dataNascimento: '2000-05-15' })
+                body: JSON.stringify({ matricula, nome, email, dataNascimento })
             })
             .then(response => response.json())
             .then(data => document.getElementById('response').innerText = JSON.stringify(data, null, 2))
@@ -74,7 +92,12 @@
 
         // Função para realizar uma requisição DELETE para remover um aluno
         function deletarAluno() {
-            fetch('http://localhost:3000/alunos/1', {
+            const matricula = document.getElementById('matricula').value;
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const dataNascimento = document.getElementById('data_nascimento').value;
+            
+            fetch(`http://localhost:3000/alunos/${matricula}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
