@@ -66,7 +66,7 @@ function saveAluno(aluno) {
   }
 
   if (alunos.find(alunoDaLista => alunoDaLista.matricula == aluno.matricula)) {
-      return { sucesso: false, mensagem: "Já existe um aluno com essa matrícula." };
+      return { sucesso: false, mensagem: "Erro: Já existe um aluno com essa matrícula." };
   }
   
   alunos.push(aluno);
@@ -75,14 +75,25 @@ function saveAluno(aluno) {
 
 function updateAluno(matricula, alunoAtualizado) {
   if (temValoresNulos(alunoAtualizado)) {
-      return { sucesso: false, mensagem: "Erro: Há campos nulos. Todos os campos são obrigatórios." };
+    return { sucesso: false, mensagem: "Erro: Todos os campos são obrigatórios." };
   }
 
   const index = alunos.findIndex(aluno => aluno.matricula === matricula);
 
   if (index !== -1) {
-      alunos[index] = { ...alunos[index], ...alunoAtualizado };
-      return { sucesso: true, mensagem: "Aluno atualizado com sucesso." };
+    const alunoExistente = alunos[index];
+    
+    // Verifica se há alguma diferença entre os dados existentes e os novos
+    const temMudancas = Object.keys(alunoAtualizado).some(key => 
+      alunoExistente[key] !== alunoAtualizado[key]
+    );
+
+    if (!temMudancas) {
+      return { sucesso: false, mensagem: "Não houve alterações, atualização não realizada." };
+    }
+
+    alunos[index] = { ...alunoExistente, ...alunoAtualizado };
+    return { sucesso: true, mensagem: "Aluno atualizado com sucesso." };
   }
   return { sucesso: false, mensagem: "Aluno com esta matrícula não encontrado." };
 }
